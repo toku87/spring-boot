@@ -20,6 +20,10 @@ public class CurrencyExchangeController {
     @Autowired
     private RestTemplate restTemplate;
 
+    @PutMapping
+    public CurrencyExchangeEntry addCurrencyExchangeEntry(@RequestBody CurrencyExchangeEntry currencyExchangeEntry) {
+        return currencyExchangeEntryRepository.save(currencyExchangeEntry);
+    }
 
     @GetMapping("/{cur1}/{amount}/{cur2}")
     public CurrencyExchangeResultDto exchangeCurrencies(@PathVariable String cur1, @PathVariable String amount, @PathVariable String cur2){
@@ -32,13 +36,16 @@ public class CurrencyExchangeController {
         FixerResponseDto response =
                 restTemplate.getForEntity("http://api.fixer.io/latest?symbols=" + cur1 + "," + cur2, FixerResponseDto.class).getBody();
 
-        BigDecimal divider = new BigDecimal(response.getRates().get(cur2)).divide(new BigDecimal(response.getRates().get(cur1)), 5);
+        BigDecimal divider = new BigDecimal(response.getRates().get(cur2)).divide(new BigDecimal(response.getRates().get(cur1)),5);
 
         BigDecimal toValue = fromValue.multiply(divider);
         result.setResult(toValue);
 
         CurrencyExchangeEntry currencyExchangeEntry = new CurrencyExchangeEntry();
-        currencyExchangeEntry.s
+        currencyExchangeEntry.setCurrencyFrom(cur1);
+        currencyExchangeEntry.setCurrencyTo(cur2);
+        currencyExchangeEntry.setValueFrom(fromValue);
+        currencyExchangeEntry.setExchangeRate(divider);
 
         return result;
     }

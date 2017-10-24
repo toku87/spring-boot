@@ -11,10 +11,22 @@ public class CurrencyExchangeEntry {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private String currencyFrom;
     private String currencyTo;
     private BigDecimal valueFrom;
     private BigDecimal valueTo;
     private BigDecimal exchangeRate;
+
+    public CurrencyExchangeEntry(){}
+
+    public String getCurrencyFrom() {
+        return currencyFrom;
+    }
+
+    public void setCurrencyFrom(String currencyFrom) {
+        this.currencyFrom = currencyFrom;
+    }
+
     public BigDecimal getExchangeRate() {
         return exchangeRate;
     }
